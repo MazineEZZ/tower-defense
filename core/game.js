@@ -1,5 +1,4 @@
 import { gameSettings, inputBindings } from "../data/settings.js";
-import { Player } from "../entities/player.js";
 import { EntityRegistry } from "../systems/entities.js";
 import { CollisionSystem } from "../systems/collisions.js";
 import { Inputs } from "../systems/inputs.js";
@@ -15,9 +14,7 @@ import {
   TooltipManager,
   Tooltip,
 } from "../ui/ui.js";
-import { Hazard } from "../entities/hazard.js";
 import { DebugOverlay } from "../systems/debug.js";
-import { Barrier } from "../entities/barrier.js";
 import { gameState } from "../states/gameState.js";
 
 class Game {
@@ -120,33 +117,6 @@ class Game {
     }
   }
   loadPlayState() {
-    this.player = new Player(
-      "player",
-      20,
-      20,
-      40,
-      100,
-      40,
-      100,
-      4,
-      300,
-      this.collisions,
-      this.inputs,
-      this.events,
-      "yellow",
-    );
-    this.collisions.register(this.player);
-    this.entities.register(this.player);
-
-    this.tooltips.register(
-      this.player,
-      "This is a long test text, to see whether the tooltip wraps text or not.",
-      gameState.states.play,
-    );
-
-    const obstacle = new Barrier("barrier", 200, 100, 50, 50, 3, "brown");
-    this.entities.register(obstacle);
-    this.collisions.register(obstacle);
   }
 
   loadMenuUI() {
@@ -157,13 +127,11 @@ class Game {
       align: "center",
       baseline: "middle",
     });
-    const checkbox = new Checkbox(500, 300, 50, 50, 4);
-    const slider = new Slider(500, 400, 200, 30, 4);
     const startGameBtn = new Button(
       gameSettings.width / 2,
       500,
-      100,
-      30,
+      200,
+      50,
       4,
       this.events,
       "gameStarted",
@@ -177,8 +145,6 @@ class Game {
     );
 
     this.menuUI.register(title);
-    this.menuUI.register(checkbox);
-    this.menuUI.register(slider);
     this.menuUI.register(startGameBtn);
 
     this.events.on("gameStarted", (event) => {
@@ -219,29 +185,7 @@ class Game {
     this.pauseUI.register(pauseText);
     this.pauseUI.register(menuBtn);
   }
-  loadPlayUI() {
-    this.playUI = new UILayer();
-
-    const playerHealthBar = new ResourceBar(
-      20,
-      gameSettings.height - 30 - 20,
-      200,
-      30,
-      3,
-    );
-
-    this.tooltips.register(
-      playerHealthBar,
-      "This is a player's healthbar",
-      gameState.states.play,
-    );
-
-    this.playUI.register(playerHealthBar);
-
-    this.events.on("playerHealthChanged", ({ current, max }) =>
-      playerHealthBar.setValue(current, max),
-    );
-  }
+  loadPlayUI() {}
   init() {
     this.loadPlayState();
 
