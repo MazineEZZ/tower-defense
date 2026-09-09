@@ -1,9 +1,9 @@
 const gameSettings = Object.freeze({
-  width: 1280,
-  height: 720,
+  width: 1024,
+  height: 640,
   ratio: 16 / 9,
   margin: 5,
-  grid: 80,
+  cellSize: 32 * 2,
   bgColor: "rgb(82, 171, 244)",
 });
 

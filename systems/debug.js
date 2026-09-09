@@ -20,7 +20,7 @@ class DebugOverlay {
     this.trackedEntity = {};
 
     // Grid
-    this.cellSize = 16 * 5
+    this.cellSize = gameSettings.cellSize;
 
     // UI
     this.debugColor = "green";

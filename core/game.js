@@ -16,6 +16,7 @@ import {
 } from "../ui/ui.js";
 import { DebugOverlay } from "../systems/debug.js";
 import { gameState } from "../states/gameState.js";
+import { TileMap } from "../systems/tileMap.js";
 
 class Game {
   constructor(canvas) {
@@ -39,6 +40,7 @@ class Game {
       position: { x: -10, y: -10 },
       lastClickPos: { x: -10, y: -10 },
     };
+    this.tileMap = new TileMap(gameSettings.cellSize);
 
     // Game State
     gameState.setCurrentState(gameState.states.play);
@@ -184,9 +186,8 @@ class Game {
   }
   draw() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    // Background
-    this.ctx.fillStyle = gameSettings.bgColor;
-    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    // TileMap
+    this.tileMap.drawGrid(this.ctx);
 
     gameState.currentState.draw(this);
 
@@ -194,6 +195,7 @@ class Game {
     this.debugOverlay.drawScreenStats(this.ctx);
     // Tooltip
     this.tooltips.draw(this.ctx);
+
   }
   update(dt) {
     gameState.currentState.update(dt, this);
