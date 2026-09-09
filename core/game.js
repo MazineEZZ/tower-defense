@@ -41,7 +41,7 @@ class Game {
     };
 
     // Game State
-    gameState.setCurrentState(gameState.states.menu);
+    gameState.setCurrentState(gameState.states.play);
 
     // Initial Setup
     this.canvas.width = gameSettings.width;
@@ -98,23 +98,6 @@ class Game {
     this.canvas.style.width = w + "px";
     this.canvas.style.height = h + "px";
     this.canvas.style.margin = margin + "px";
-  }
-  debugGrid() {
-    this.ctx.strokeStyle = "#000";
-    this.ctx.lineWidth = 6;
-
-    for (let i = 0; i < gameSettings.width; i += gameSettings.grid) {
-      this.ctx.beginPath();
-      this.ctx.moveTo(i, 0);
-      this.ctx.lineTo(i, gameSettings.height);
-      this.ctx.stroke();
-    }
-    for (let i = 0; i < gameSettings.height; i += gameSettings.grid) {
-      this.ctx.beginPath();
-      this.ctx.moveTo(0, i);
-      this.ctx.lineTo(gameSettings.width, i);
-      this.ctx.stroke();
-    }
   }
   loadPlayState() {
   }
@@ -184,8 +167,14 @@ class Game {
 
     this.pauseUI.register(pauseText);
     this.pauseUI.register(menuBtn);
+
+    this.events.on("gameMenu", (event) => {
+      gameState.handleEvent(event, this);
+    });
   }
-  loadPlayUI() {}
+  loadPlayUI() {
+    this.playUI = new UILayer();
+  }
   init() {
     this.loadPlayState();
 
@@ -205,7 +194,6 @@ class Game {
     this.debugOverlay.drawScreenStats(this.ctx);
     // Tooltip
     this.tooltips.draw(this.ctx);
-    // this.debugGrid();
   }
   update(dt) {
     gameState.currentState.update(dt, this);

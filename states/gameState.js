@@ -17,7 +17,7 @@ const pausedState = new State(
 			game.events.emit("gamePaused");
 		},
 		update: (dt, game) => {
-			game.pauseUI.draw(game.ctx);
+			game.pauseUI.update(dt, game.clientMouse);
 		},
 		draw: (game) => {
 			game.pauseUI.draw(game.ctx);
@@ -60,6 +60,7 @@ const playState = new State(
 			game.entities.draw(game.ctx);
 			// Debug
 			game.debugOverlay.drawHitboxes(game.ctx);
+			game.debugOverlay.drawGrid(game.ctx);
 			// UI
 			game.playUI.draw(game.ctx);
 		},
