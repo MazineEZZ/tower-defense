@@ -18,6 +18,7 @@ import { DebugOverlay } from "../systems/debug.js";
 import { gameState } from "../states/gameState.js";
 import { TileMap } from "../systems/tileMap.js";
 import { AssetManager } from "../systems/assets.js";
+import { PlacementGrid } from "../systems/placementGrid.js";
 
 class Game {
   constructor(canvas) {
@@ -189,6 +190,7 @@ class Game {
       this.assetManager.getData("tilemap"),
       this.assetManager.getImage("tileset"),
     );
+    this.placementGrid = new PlacementGrid(this.tileMap);
 
     // Entities States
     this.loadPlayState();
@@ -203,6 +205,7 @@ class Game {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     // TileMap
     this.tileMap.drawGrid(this.ctx);
+    this.placementGrid.draw(this.ctx);
 
     gameState.currentState.draw(this);
 
@@ -212,6 +215,7 @@ class Game {
     this.tooltips.draw(this.ctx);
   }
   update(dt) {
+    this.placementGrid.update(dt, this.clientMouse);
     gameState.currentState.update(dt, this);
 
     // Tooltip

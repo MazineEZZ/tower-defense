@@ -8,6 +8,8 @@ body {
 }
 
 #main-canvas {
+  position: relative;
+  bottom: 5px;
   image-rendering: pixelated;
   image-rendering: -moz-crisp-edges;
 }
