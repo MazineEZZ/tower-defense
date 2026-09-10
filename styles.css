@@ -6,3 +6,8 @@ body {
   align-items: center;
   overflow: hidden;
 }
+
+#main-canvas {
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+}

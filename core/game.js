@@ -83,31 +83,24 @@ class Game {
     });
   }
   resizeCanvas() {
+    const ratio = gameSettings.ratio;
+    let w, h;
     const margin = gameSettings.margin;
-    const baseWidth = gameSettings.width;
-    const baseHeight = gameSettings.height;
-    const dpr = window.devicePixelRatio || 1;
 
     const availableWidth = window.innerWidth - margin * 2;
     const availableHeight = window.innerHeight - margin * 2;
 
-    const scale = Math.max(
-      1,
-      Math.floor(
-        Math.min(availableWidth / baseWidth, availableHeight / baseHeight),
-      ),
-    );
+    if (availableWidth / availableHeight > ratio) {
+      h = availableHeight;
+      w = h * ratio;
+    } else {
+      w = availableWidth;
+      h = w / ratio;
+    }
 
-    this.canvas.style.width = baseWidth * scale + "px";
-    this.canvas.style.height = baseHeight * scale + "px";
+    this.canvas.style.width = w + "px";
+    this.canvas.style.height = h + "px";
     this.canvas.style.margin = margin + "px";
-
-    this.canvas.width = baseWidth * dpr;
-    this.canvas.height = baseHeight * dpr;
-
-    this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-    this.ctx.scale(dpr, dpr);
-    this.ctx.imageSmoothingEnabled = false;
   }
   loadPlayState() {}
 
@@ -206,6 +199,7 @@ class Game {
     this.loadMenuUI();
   }
   draw() {
+    this.ctx.imageSmoothingEnabled = false;
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     // TileMap
     this.tileMap.drawGrid(this.ctx);
