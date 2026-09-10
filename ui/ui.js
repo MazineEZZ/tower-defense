@@ -159,6 +159,7 @@ class Button extends UIElement {
     });
   }
   update(dt, mouse) {
+    if (!this.visible) return;
     if (isMouseOverlapping(this, mouse.position)) {
       this.color = this.hoverClr;
     } else {
@@ -169,6 +170,7 @@ class Button extends UIElement {
     }
   }
   draw(ctx) {
+    if (!this.visible) return;
     // Border
     ctx.fillStyle = this.borderColor;
     ctx.fillRect(
@@ -553,19 +555,93 @@ class TooltipManager {
   }
 }
 
+class ToolBar {
+  constructor(x, y, width, height, zIndex, events, tools, color) {
+    this.position = { x, y };
+    this.width = width;
+    this.height = height;
+    this.events = events;
+    this.tools = tools;
+
+    // Panel
+    this.panel = new Panel(x, y, width, height, zIndex, color);
+
+    // Close Button
+    const btnOffset = 10;
+    const btnWidth = 50;
+    const btnHeight = 50;
+    this.closeToolbarBtn = new Button(
+      x + btnOffset,
+      y + btnOffset,
+      btnWidth - btnOffset * 2,
+      btnHeight - btnOffset * 2,
+      zIndex + 1,
+      this.events,
+      "toggleToolbar",
+      { btnBorderSize: 2, btnBorderColor: "black" },
+      {
+        text: "x",
+        fontClr: "white",
+      },
+      "red",
+      "green",
+    );
+    this.visible = true;
+
+    // Card properties
+    this.xOffset = 80;
+    this.cardWidth = 90;
+    this.cardHeight = 90;
+    this.cardGap = 20;
+
+    // Card Labels
+    this.cardLabels = this.tools.map(
+      (tool) =>
+        new Label(0, 0, {
+          text: tool.label,
+          align: "center",
+          baseline: "middle",
+          fontSize: "14px",
+        }),
+    );
+  }
+  update(dt, mouse) {
+    if (!this.visible) return;
+    this.closeToolbarBtn.update(dt, mouse);
+  }
+  drawCards(ctx) {
+    ctx.imageSmoothingEnabled = true;
+
+    for (const [i, tool] of this.tools.entries()) {
+      const offset = (this.cardWidth + this.cardGap) * i;
+      ctx.fillStyle = "green";
+      ctx.fillRect(
+        this.position.x + this.xOffset + offset,
+        this.position.y + this.height / 2 - this.cardHeight / 2,
+        this.cardWidth,
+        this.cardHeight,
+      );
+      this.cardLabels[i].position.x =
+        this.position.x + this.cardWidth / 2 + this.xOffset + offset;
+      this.cardLabels[i].position.y =
+        this.position.y + this.height / 2 + this.cardHeight / 2 - 15;
+      this.cardLabels[i].draw(ctx);
+    }
+  }
+  draw(ctx) {
+    if (!this.visible) return;
+    this.panel.draw(ctx);
+    this.closeToolbarBtn.draw(ctx);
+    this.drawCards(ctx);
+  }
+}
+
 class UILayer extends RegistrySystem {
   constructor() {
     super();
   }
   sortByLayers() {
     this.elements.sort((a, b) => a.zIndex - b.zIndex);
-  }
-  update(dt, mouse) {
-    for (const el of [...this.elements]) {
-      if (typeof el.update === "function") {
-        el.update(dt, mouse);
-      }
-    }
   }
 }
 
@@ -618,5 +694,6 @@ export {
   Checkbox,
   Slider,
   Tooltip,
+  ToolBar,
   isMouseOverlapping,
 };

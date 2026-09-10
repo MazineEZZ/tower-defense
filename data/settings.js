@@ -3,7 +3,7 @@ const gameSettings = Object.freeze({
   height: 640,
   ratio: 16 / 9,
   margin: 5,
-  cellSize: 32 * 2,
+  cellSize: 64,
   bgColor: "rgb(82, 171, 244)",
 });
 

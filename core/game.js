@@ -13,12 +13,16 @@ import {
   Button,
   TooltipManager,
   Tooltip,
+  Panel,
+  ToolBar,
 } from "../ui/ui.js";
 import { DebugOverlay } from "../systems/debug.js";
 import { gameState } from "../states/gameState.js";
 import { TileMap } from "../systems/tileMap.js";
 import { AssetManager } from "../systems/assets.js";
 import { PlacementGrid } from "../systems/placementGrid.js";
+import { RegistrySystem } from "../systems/registry.js";
+import { towerTypes } from "../data/data.js";
 
 class Game {
   constructor(canvas) {
@@ -103,7 +107,12 @@ class Game {
     this.canvas.style.height = h + "px";
     this.canvas.style.margin = margin + "px";
   }
-  loadPlayState() {}
+  loadPlayState() {
+    this.playGroup = new RegistrySystem();
+
+    this.playGroup.register(this.tileMap);
+    this.playGroup.register(this.placementGrid);
+  }
 
   loadMenuUI() {
     this.menuUI = new UILayer();
@@ -177,6 +186,51 @@ class Game {
   }
   loadPlayUI() {
     this.playUI = new UILayer();
+    // Some ui constants
+    const cellSize = gameSettings.cellSize;
+    const gameWidth = gameSettings.width;
+    const gameHeight = gameSettings.height;
+    const offset = 10;
+
+    const btnWidth = cellSize;
+    const btnHeight = cellSize / 2;
+    const openToolbarBtn = new Button(
+      cellSize - btnWidth / 2,
+      9 * cellSize + cellSize / 2 - btnHeight / 2,
+      btnWidth,
+      btnHeight,
+      4,
+      this.events,
+      "toggleToolbar",
+      { btnBorderSize: 2, btnBorderColor: "black" },
+      {
+        text: "towers",
+        fontClr: "white",
+        fontSize: "18px",
+      },
+      "red",
+      "green",
+    );
+
+    const toolbar = new ToolBar(
+      offset,
+      8 * cellSize + offset,
+      gameWidth - offset * 2,
+      2 * cellSize - offset * 2,
+      4,
+      this.events,
+      towerTypes,
+      "black",
+    );
+    toolbar.visible = false;
+
+    this.events.on("toggleToolbar", () => {
+      toolbar.visible = !toolbar.visible;
+      openToolbarBtn.visible = !toolbar.visible;
+    });
+
+    this.playGroup.register(openToolbarBtn);
+    this.playGroup.register(toolbar);
   }
   async init() {
     // Load assets
@@ -203,9 +257,6 @@ class Game {
   draw() {
     this.ctx.imageSmoothingEnabled = false;
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    // TileMap
-    this.tileMap.drawGrid(this.ctx);
-    this.placementGrid.draw(this.ctx);
 
     gameState.currentState.draw(this);
 

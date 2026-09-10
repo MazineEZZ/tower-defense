@@ -54,8 +54,6 @@ class PlacementGrid {
     ctx.restore();
   }
   drawSelectedCell(ctx) {
-    if (this.oldPos === this.selectedCell) return;
-    this.oldPos = this.selectedCell;
     this.drawFade(
       ctx,
       this.selectedCell.x,

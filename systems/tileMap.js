@@ -30,7 +30,7 @@ class TileMap {
   getTileData(json) {
     return json.layers[0].data;
   }
-  drawGrid(ctx) {
+  draw(ctx) {
     for (let row = 0; row < this.mapHeight; row++) {
       for (let col = 0; col < this.mapWidth; col++) {
         const gid = this.tileMap[row][col];
