@@ -17,6 +17,7 @@ import {
 import { DebugOverlay } from "../systems/debug.js";
 import { gameState } from "../states/gameState.js";
 import { TileMap } from "../systems/tileMap.js";
+import { AssetManager } from "../systems/assets.js";
 
 class Game {
   constructor(canvas) {
@@ -29,6 +30,7 @@ class Game {
     this.inputs = new Inputs(inputBindings);
     this.events = new EventBus();
     this.tooltips = new TooltipManager();
+    this.assetManager = new AssetManager();
     this.debugOverlay = new DebugOverlay(
       this.entities,
       this.collisions,
@@ -40,7 +42,6 @@ class Game {
       position: { x: -10, y: -10 },
       lastClickPos: { x: -10, y: -10 },
     };
-    this.tileMap = new TileMap(gameSettings.cellSize);
 
     // Game State
     gameState.setCurrentState(gameState.states.play);
@@ -101,8 +102,7 @@ class Game {
     this.canvas.style.height = h + "px";
     this.canvas.style.margin = margin + "px";
   }
-  loadPlayState() {
-  }
+  loadPlayState() {}
 
   loadMenuUI() {
     this.menuUI = new UILayer();
@@ -177,9 +177,23 @@ class Game {
   loadPlayUI() {
     this.playUI = new UILayer();
   }
-  init() {
+  async init() {
+    // Load assets
+    await Promise.all([
+      this.assetManager.loadImage("tilesetIMG", "tileset/fieldTileset.png"),
+      this.assetManager.loadData("tilesetJSON", "tileset/tileSet.json"),
+    ]);
+    // TileMap
+    this.tileMap = new TileMap(
+      gameSettings.cellSize,
+      this.assetManager.getData("tilesetJSON"),
+      this.assetManager.getImage("tilesetIMG"),
+    );
+
+    // Entities States
     this.loadPlayState();
 
+    // UI States
     this.loadPlayUI();
     this.loadPauseUI();
     this.loadMenuUI();
@@ -195,7 +209,6 @@ class Game {
     this.debugOverlay.drawScreenStats(this.ctx);
     // Tooltip
     this.tooltips.draw(this.ctx);
-
   }
   update(dt) {
     gameState.currentState.update(dt, this);
@@ -219,8 +232,8 @@ class Game {
     };
     this.animationFrameId = requestAnimationFrame(loop);
   }
-  start() {
-    this.init();
+  async start() {
+    await this.init();
     this.gameLoop();
   }
   stop() {

@@ -18,4 +18,10 @@ const inputBindings = Object.freeze({
   test2: "m",
 });
 
-export { gameSettings, inputBindings };
+const tileSetDir = "assets/tileset/";
+const tileSet = Object.freeze({
+  mapSrc: tileSetDir + "tileSet.json",
+  setSrc: tileSetDir + "FieldTileset.png",
+});
+
+export { gameSettings, inputBindings, tileSet };
