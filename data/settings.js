@@ -18,10 +18,10 @@ const inputBindings = Object.freeze({
   test2: "m",
 });
 
-const tileSetDir = "assets/tileset/";
+const tileSetDir = "tileset/";
 const tileSet = Object.freeze({
-  mapSrc: tileSetDir + "tileSet.json",
-  setSrc: tileSetDir + "FieldTileset.png",
+  mapSrc: tileSetDir + "tileset.json",
+  imgSrc: tileSetDir + "fieldTileset.png",
 });
 
 export { gameSettings, inputBindings, tileSet };

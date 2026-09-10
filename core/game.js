@@ -1,4 +1,4 @@
-import { gameSettings, inputBindings } from "../data/settings.js";
+import { gameSettings, inputBindings, tileSet } from "../data/settings.js";
 import { EntityRegistry } from "../systems/entities.js";
 import { CollisionSystem } from "../systems/collisions.js";
 import { Inputs } from "../systems/inputs.js";
@@ -180,8 +180,8 @@ class Game {
   async init() {
     // Load assets
     await Promise.all([
-      this.assetManager.loadImage("tilesetIMG", "tileset/fieldTileset.png"),
-      this.assetManager.loadData("tilesetJSON", "tileset/tileSet.json"),
+      this.assetManager.loadImage("tilesetIMG", tileSet.imgSrc),
+      this.assetManager.loadData("tilesetJSON", tileSet.mapSrc),
     ]);
     // TileMap
     this.tileMap = new TileMap(

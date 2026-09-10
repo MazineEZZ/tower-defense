@@ -57,4 +57,11 @@ function colorToRGB(color) {
   return { r, g, b };
 }
 
-export { roundTo, clamp, colorToRGB, calcDistance2Points, isLetter };
+export {
+  roundTo,
+  clamp,
+  colorToRGB,
+  calcDistance2Points,
+  isLetter,
+  construct2DArray,
+};
