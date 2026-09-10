@@ -83,24 +83,31 @@ class Game {
     });
   }
   resizeCanvas() {
-    const ratio = gameSettings.ratio;
-    let w, h;
     const margin = gameSettings.margin;
+    const baseWidth = gameSettings.width;
+    const baseHeight = gameSettings.height;
+    const dpr = window.devicePixelRatio || 1;
 
     const availableWidth = window.innerWidth - margin * 2;
     const availableHeight = window.innerHeight - margin * 2;
 
-    if (availableWidth / availableHeight > ratio) {
-      h = availableHeight;
-      w = h * ratio;
-    } else {
-      w = availableWidth;
-      h = w / ratio;
-    }
+    const scale = Math.max(
+      1,
+      Math.floor(
+        Math.min(availableWidth / baseWidth, availableHeight / baseHeight),
+      ),
+    );
 
-    this.canvas.style.width = w + "px";
-    this.canvas.style.height = h + "px";
+    this.canvas.style.width = baseWidth * scale + "px";
+    this.canvas.style.height = baseHeight * scale + "px";
     this.canvas.style.margin = margin + "px";
+
+    this.canvas.width = baseWidth * dpr;
+    this.canvas.height = baseHeight * dpr;
+
+    this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+    this.ctx.scale(dpr, dpr);
+    this.ctx.imageSmoothingEnabled = false;
   }
   loadPlayState() {}
 
@@ -180,14 +187,14 @@ class Game {
   async init() {
     // Load assets
     await Promise.all([
-      this.assetManager.loadImage("tilesetIMG", tileSet.imgSrc),
-      this.assetManager.loadData("tilesetJSON", tileSet.mapSrc),
+      this.assetManager.loadImage("tileset", tileSet.imgSrc),
+      this.assetManager.loadData("tilemap", tileSet.mapSrc),
     ]);
     // TileMap
     this.tileMap = new TileMap(
       gameSettings.cellSize,
-      this.assetManager.getData("tilesetJSON"),
-      this.assetManager.getImage("tilesetIMG"),
+      this.assetManager.getData("tilemap"),
+      this.assetManager.getImage("tileset"),
     );
 
     // Entities States
