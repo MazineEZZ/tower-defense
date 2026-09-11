@@ -6,4 +6,5 @@ class FactoryRegistry extends RegistrySystem {
     super();
   }
 }
+
 export { FactoryRegistry };

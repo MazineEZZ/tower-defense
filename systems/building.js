@@ -1,35 +1,58 @@
 import { isMouseOverlapping } from "../ui/ui.js";
 
 class BuildSystem {
-  constructor(tileMap, towers) {
+  constructor(tileMap, towerFactory, towerTypes) {
+    // TileMap
     this.tileMap = tileMap;
     this.cellSize = tileMap.cellSize;
-    this.selectedCell = { x: -this.cellSize, y: -this.cellSize };
 
-    this.towers = towers;
+    // SelectedCell
+    this.selectedCell = {
+      position: { x: -this.cellSize, y: -this.cellSize },
+      width: this.cellSize,
+      height: this.cellSize,
+    };
+
+    // Towers
+    this.towerTypes = towerTypes;
     this.selectedTower = null;
-    this.builtTowers = [];
+    this.towerFactory = towerFactory;
   }
   update(dt, mouse) {
-    this.selectedCell = this.tileMap.getSelectedCoords(mouse.position);
     if (this.selectedTower !== null) {
-      this.buildTower(mouse);
+      this.tryBuild(mouse);
+    }
+    this.selectedCell.position = this.tileMap.getSelectedCoords(mouse.position);
+  }
+  tryBuild(mouse) {
+    if (isMouseOverlapping(this.selectedCell, mouse.lastClickPos)) {
+      const x = this.selectedCell.position.x;
+      const y = this.selectedCell.position.y;
+
+      this.towerFactory.create(
+        this.selectedTower.type,
+        x,
+        y,
+        this.cellSize,
+        this.cellSize,
+        this.selectedTower.color,
+      );
+      this.selectedTower = null;
     }
   }
-  buildTower(mouse) {}
   isValidPlacement() {}
   selectTower(id) {
-    this.selectedTower = this.towers.find((t) => t.id === id) || null;
-    console.log(this.selectedTower);
+    this.selectedTower = this.towerTypes.find((t) => t.id === id) || null;
   }
   drawSelectedTower(ctx) {
     if (this.selectedTower === null) return;
-    ctx.fillStyle = this.selectedTower.color;
-    ctx.fillRect(
-      this.selectedCell.x,
-      this.selectedCell.y,
+    this.towerFactory.showPreview(
+      this.selectedTower.type,
+      this.selectedCell.position.x,
+      this.selectedCell.position.y,
       this.cellSize,
       this.cellSize,
+      this.selectedTower.color,
     );
   }
   draw(ctx) {

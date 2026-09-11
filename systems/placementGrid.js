@@ -7,10 +7,10 @@ class PlacementGrid {
     this.width = this.tileMap.width;
     this.height = this.tileMap.height;
     this.cellSize = this.tileMap.cellSize;
-    this.selectedCell = { x: -this.cellSize, y: -this.cellSize };
+    this.selectedCell = { position: { x: -this.cellSize, y: -this.cellSize } };
   }
   update(dt, mouse) {
-    this.selectedCell = this.tileMap.getSelectedCoords(mouse);
+    this.selectedCell.position = this.tileMap.getSelectedCoords(mouse.position);
   }
   drawFade(ctx, x, y, width, height, color) {
     color = colorToRGB(color);
@@ -56,8 +56,8 @@ class PlacementGrid {
   drawSelectedCell(ctx) {
     this.drawFade(
       ctx,
-      this.selectedCell.x,
-      this.selectedCell.y,
+      this.selectedCell.position.x,
+      this.selectedCell.position.y,
       this.cellSize,
       this.cellSize,
       "#fff",

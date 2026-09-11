@@ -24,6 +24,7 @@ import { PlacementGrid } from "../systems/placementGrid.js";
 import { RegistrySystem } from "../systems/registry.js";
 import { towerTypes } from "../data/data.js";
 import { BuildSystem } from "../systems/building.js";
+import { TowerFactory } from "../entities/towerFactory.js";
 
 class Game {
   constructor(canvas) {
@@ -118,7 +119,12 @@ class Game {
   loadPlayState() {
     this.playGroup = new RegistrySystem();
 
-    this.buildFloor = new BuildSystem(this.tileMap, towerTypes);
+    this.towerFactory = new TowerFactory();
+    this.buildFloor = new BuildSystem(
+      this.tileMap,
+      this.towerFactory,
+      towerTypes,
+    );
 
     this.events.on("towerPicked", (type) => {
       this.buildFloor.selectTower(type);
@@ -127,6 +133,7 @@ class Game {
     this.playGroup.register(this.tileMap);
     this.playGroup.register(this.placementGrid);
     this.playGroup.register(this.buildFloor);
+    this.playGroup.register(this.towerFactory);
   }
 
   loadMenuUI() {
