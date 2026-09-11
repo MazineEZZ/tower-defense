@@ -494,148 +494,6 @@ class TextBox extends UIElement {
   }
 }
 
-class Tooltip extends TextBox {
-  constructor(
-    color,
-    {
-      fontSize = "20px",
-      fontClr = "white",
-      fontBorderClr = "black",
-      fontBorderSize = 4,
-      fontAlign = "left",
-      fontBaseline = "top",
-    } = {},
-  ) {
-    super(0, 0, 0, 0, 1, color, {
-      fontSize,
-      fontClr,
-      fontBorderClr,
-      fontBorderSize,
-      fontAlign,
-      fontBaseline,
-    });
-    this.padding = 10;
-    this._dirty = false;
-    this.maxWidth = 200;
-  }
-}
-
-class TooltipManager {
-  constructor() {
-    this.tooltip = new Tooltip("black");
-    this.trackedEntities = [];
-  }
-  register(entity, text, state) {
-    this.trackedEntities.push({ entity, text, state });
-  }
-  clear() {
-    this.trackedEntities = [];
-  }
-  update(dt, mouse, state) {
-    for (const te of this.trackedEntities) {
-      console.log(state, te.state);
-      if (isMouseOverlapping(te.entity, mouse.position) && te.state === state) {
-        const offset = 10;
-        this.tooltip.position.x =
-          te.entity.position.x + te.entity.width + offset;
-        this.tooltip.position.y = te.entity.position.y;
-        this.tooltip.setText(te.text);
-        te.showTooltip = true;
-      } else {
-        te.showTooltip = false;
-      }
-    }
-  }
-  draw(ctx) {
-    for (const te of this.trackedEntities) {
-      if (!te.showTooltip) continue;
-
-      this.tooltip.draw(ctx);
-    }
-  }
-}
-
-class ToolBar {
-  constructor(x, y, width, height, zIndex, events, tools, color) {
-    this.position = { x, y };
-    this.width = width;
-    this.height = height;
-    this.events = events;
-    this.tools = tools;
-
-    // Panel
-    this.panel = new Panel(x, y, width, height, zIndex, color);
-
-    // Close Button
-    const btnOffset = 10;
-    const btnWidth = 50;
-    const btnHeight = 50;
-    this.closeToolbarBtn = new Button(
-      x + btnOffset,
-      y + btnOffset,
-      btnWidth - btnOffset * 2,
-      btnHeight - btnOffset * 2,
-      zIndex + 1,
-      this.events,
-      "toggleToolbar",
-      { btnBorderSize: 2, btnBorderColor: "black" },
-      {
-        text: "x",
-        fontClr: "white",
-      },
-      "red",
-      "green",
-    );
-    this.visible = true;
-
-    // Card properties
-    this.xOffset = 80;
-    this.cardWidth = 90;
-    this.cardHeight = 90;
-    this.cardGap = 20;
-
-    // Card Labels
-    this.cardLabels = this.tools.map(
-      (tool) =>
-        new Label(0, 0, {
-          text: tool.label,
-          align: "center",
-          baseline: "middle",
-          fontSize: "14px",
-        }),
-    );
-  }
-  update(dt, mouse) {
-    if (!this.visible) return;
-    this.closeToolbarBtn.update(dt, mouse);
-  }
-  drawCards(ctx) {
-    ctx.imageSmoothingEnabled = true;
-
-    for (const [i, tool] of this.tools.entries()) {
-      const offset = (this.cardWidth + this.cardGap) * i;
-      ctx.fillStyle = "green";
-      ctx.fillRect(
-        this.position.x + this.xOffset + offset,
-        this.position.y + this.height / 2 - this.cardHeight / 2,
-        this.cardWidth,
-        this.cardHeight,
-      );
-      this.cardLabels[i].position.x =
-        this.position.x + this.cardWidth / 2 + this.xOffset + offset;
-      this.cardLabels[i].position.y =
-        this.position.y + this.height / 2 + this.cardHeight / 2 - 15;
-      this.cardLabels[i].draw(ctx);
-    }
-  }
-  draw(ctx) {
-    if (!this.visible) return;
-    this.panel.draw(ctx);
-    this.closeToolbarBtn.draw(ctx);
-    this.drawCards(ctx);
-  }
-}
-
 class UILayer extends RegistrySystem {
   constructor() {
     super();
@@ -684,8 +542,9 @@ function remap(t, t1, t2, a, b) {
 }
 
 export {
+  UIElement,
   UILayer,
-  TooltipManager,
+  TextBox,
   Label,
   Panel,
   ImageUI,
@@ -693,7 +552,5 @@ export {
   ResourceBar,
   Checkbox,
   Slider,
-  Tooltip,
-  ToolBar,
   isMouseOverlapping,
 };
