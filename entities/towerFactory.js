@@ -1,3 +1,4 @@
+import { gameSettings } from "../data/settings.js";
 import { FactoryRegistry } from "../systems/factories.js";
 import { Tower } from "./tower.js";
 
@@ -5,24 +6,47 @@ class TowerFactory extends FactoryRegistry {
   constructor(towerTypes) {
     super();
     this.towerTypes = towerTypes;
-    this.previewTower = new Tower("", -10, -10, 1, 1, 2, "red");
+    this.cellSize = gameSettings.cellSize;
+    // Default
+    this.previewTower = new Tower(
+      towerTypes[0].type,
+      -this.cellSize,
+      -this.cellSize,
+      this.cellSize,
+      this.cellSize,
+      2,
+      "red",
+      towerTypes[0].sprite,
+    );
   }
   getTower(id) {
     return this.towerTypes.find((t) => t.id === id);
   }
   create(type, x, y, width, height) {
     const tower = this.getTower(type);
-    const newTower = new Tower(type, x, y, width, height, 4, tower.color);
+    const newTower = new Tower(
+      type,
+      x,
+      y,
+      width,
+      height,
+      4,
+      tower.color,
+      tower.sprite,
+    );
     this.elements.push(newTower);
   }
-  showPreview(type, x, y, width, height) {
+  showPreview(type, x, y) {
     const tower = this.getTower(type);
     this.previewTower.type = type;
     this.previewTower.position.x = x;
     this.previewTower.position.y = y;
-    this.previewTower.width = width;
-    this.previewTower.height = height;
     this.previewTower.color = tower.color;
+    this.previewTower.sprite = tower.sprite;
+  }
+  update(dt, mouse) {
+    super.update(dt, mouse);
+    this.previewTower.update(dt);
   }
   draw(ctx) {
     super.draw(ctx);

@@ -1,14 +1,31 @@
 class Sprite {
-  constructor(src, x, y, width, height) {
+  constructor(
+    image,
+    x,
+    y,
+    width,
+    height,
+    startX,
+    startY,
+    spriteWidth,
+    spriteHeight,
+  ) {
     this.position = { x, y };
+    this.image = image;
     this.width = width;
     this.height = height;
-    this.image = new Image();
-    this.image.src = src;
+    this.startX = startX;
+    this.startY = startY;
+    this.spriteWidth = spriteWidth;
+    this.spriteHeight = spriteHeight;
   }
   draw(ctx) {
     ctx.drawImage(
       this.image,
+      this.startX,
+      this.startY,
+      this.spriteWidth,
+      this.spriteHeight,
       this.position.x,
       this.position.y,
       this.width,

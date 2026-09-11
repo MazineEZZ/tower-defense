@@ -256,7 +256,12 @@ class Game {
       this.assetManager.loadImage("tileset", tileSet.imgSrc),
       this.assetManager.loadData("tilemap", tileSet.mapSrc),
       this.assetManager.loadImage("cursor", "sprites/cursor.png"),
+      this.assetManager.loadImage("turret", "sprites/test.png"),
     ]);
+    // this.towerTypes.map((t) => {
+    //   t.img = this.assetManager.getImage(t.type);
+    // });
+    towerTypes[0].sprite = this.assetManager.getImage("turret");
     // Cursor
     this.cursor = new ImageUI(
       this.assetManager.getImage("cursor"),
