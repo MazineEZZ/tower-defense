@@ -63,6 +63,7 @@ class PlacementGrid {
       "#fff",
     );
   }
+  drawSelectedTower(ctx) {}
   draw(ctx) {
     this.drawGrid(ctx);
     this.drawSelectedCell(ctx);

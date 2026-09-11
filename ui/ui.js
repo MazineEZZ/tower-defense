@@ -95,10 +95,9 @@ class Label extends UIElement {
 }
 
 class ImageUI extends UIElement {
-  constructor(src, x, y, width, height, zIndex) {
+  constructor(image, x, y, width, height, zIndex) {
     super(x, y, width, height, zIndex);
-    this.image = new Image();
-    this.image.src = src;
+    this.image = image;
   }
   draw(ctx) {
     ctx.drawImage(

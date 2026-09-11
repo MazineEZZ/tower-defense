@@ -11,11 +11,11 @@ import {
   Checkbox,
   Slider,
   Button,
-  TooltipManager,
-  Tooltip,
   Panel,
-  ToolBar,
+  ImageUI,
 } from "../ui/ui.js";
+import { TooltipManager } from "../ui/tooltip.js";
+import { ToolBar } from "../ui/toolbar.js";
 import { DebugOverlay } from "../systems/debug.js";
 import { gameState } from "../states/gameState.js";
 import { TileMap } from "../systems/tileMap.js";
@@ -63,8 +63,8 @@ class Game {
   }
   getScaledMousePos(e) {
     return {
-      x: e.offsetX * (this.canvas.width / this.canvas.clientWidth),
-      y: e.offsetY * (this.canvas.height / this.canvas.clientHeight),
+      x: e.offsetX * (gameSettings.width / this.canvas.clientWidth),
+      y: e.offsetY * (gameSettings.height / this.canvas.clientHeight),
     };
   }
   setUpEventListeners() {
@@ -88,27 +88,36 @@ class Game {
     });
   }
   resizeCanvas() {
-    const ratio = gameSettings.ratio;
-    let w, h;
     const margin = gameSettings.margin;
+    const baseWidth = gameSettings.width;
+    const baseHeight = gameSettings.height;
+    const dpr = window.devicePixelRatio || 1;
 
     const availableWidth = window.innerWidth - margin * 2;
     const availableHeight = window.innerHeight - margin * 2;
 
-    if (availableWidth / availableHeight > ratio) {
-      h = availableHeight;
-      w = h * ratio;
-    } else {
-      w = availableWidth;
-      h = w / ratio;
-    }
+    const scale = Math.max(
+      1,
+      Math.floor(
+        Math.min(availableWidth / baseWidth, availableHeight / baseHeight),
+      ),
+    );
 
-    this.canvas.style.width = w + "px";
-    this.canvas.style.height = h + "px";
+    this.canvas.style.width = baseWidth * scale + "px";
+    this.canvas.style.height = baseHeight * scale + "px";
     this.canvas.style.margin = margin + "px";
+
+    this.canvas.width = baseWidth * dpr;
+    this.canvas.height = baseHeight * dpr;
+
+    this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+    this.ctx.scale(dpr, dpr);
+    this.ctx.imageSmoothingEnabled = false;
   }
   loadPlayState() {
     this.playGroup = new RegistrySystem();
+
+    this.events.on("towerPicked", (type) => {});
 
     this.playGroup.register(this.tileMap);
     this.playGroup.register(this.placementGrid);
@@ -229,15 +238,26 @@ class Game {
       openToolbarBtn.visible = !toolbar.visible;
     });
 
-    this.playGroup.register(openToolbarBtn);
-    this.playGroup.register(toolbar);
+    this.playUI.register(openToolbarBtn);
+    this.playUI.register(toolbar);
   }
   async init() {
     // Load assets
     await Promise.all([
       this.assetManager.loadImage("tileset", tileSet.imgSrc),
       this.assetManager.loadData("tilemap", tileSet.mapSrc),
+      this.assetManager.loadImage("cursor", "sprites/cursor.png"),
     ]);
+    // Cursor
+    this.cursor = new ImageUI(
+      this.assetManager.getImage("cursor"),
+      0,
+      0,
+      32,
+      32,
+      10,
+    );
+
     // TileMap
     this.tileMap = new TileMap(
       gameSettings.cellSize,
@@ -264,6 +284,7 @@ class Game {
     this.debugOverlay.drawScreenStats(this.ctx);
     // Tooltip
     this.tooltips.draw(this.ctx);
+    this.cursor.draw(this.ctx);
   }
   update(dt) {
     this.placementGrid.update(dt, this.clientMouse);
@@ -275,6 +296,7 @@ class Game {
     this.debugOverlay.update(dt, this.clientMouse);
     // Reset Mouse Click Pos
     this.clientMouse.lastClickPos = { x: -10, y: -10 };
+    this.cursor.position = this.clientMouse.position;
   }
   gameLoop() {
     const loop = (timestamp) => {
