@@ -2,7 +2,7 @@ import { gameSettings } from "../data/settings.js";
 import { colorToRGB } from "../utilities/utils.js";
 
 class PlacementGrid {
-  constructor(tileMap) {
+  constructor(tileMap, events) {
     this.tileMap = tileMap;
     this.width = this.tileMap.width;
     this.height = this.tileMap.height;
@@ -63,7 +63,6 @@ class PlacementGrid {
       "#fff",
     );
   }
-  drawSelectedTower(ctx) {}
   draw(ctx) {
     this.drawGrid(ctx);
     this.drawSelectedCell(ctx);

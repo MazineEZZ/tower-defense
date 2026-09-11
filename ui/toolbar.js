@@ -1,10 +1,10 @@
 import { UIElement, Button, Label, Panel, isMouseOverlapping } from "./ui.js";
 
 class Card extends Panel {
-  constructor(x, y, width, height, zIndex, id, events, text, color) {
+  constructor(x, y, width, height, zIndex, type, events, text, color) {
     super(x, y, width, height, zIndex);
     this.color = color;
-    this.id = id;
+    this.type = type;
     this.events = events;
 
     this.label = new Label(this.position.x, this.position.y, {
@@ -22,7 +22,7 @@ class Card extends Panel {
   }
   update(dt, mouse) {
     if (isMouseOverlapping(this, mouse.lastClickPos)) {
-      this.events.emit("towerPicked", this.id);
+      this.events.emit("towerPicked", this.type);
     }
   }
 }
@@ -71,7 +71,7 @@ class ToolBar extends UIElement {
           this.cardWidth,
           this.cardHeight,
           4,
-          tool.id,
+          tool.id, // I'll use the id as types for towers.
           this.events,
           tool.label,
           tool.color,

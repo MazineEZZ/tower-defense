@@ -23,8 +23,8 @@ class TileMap {
     this.tileSetIMG = tileSetIMG;
   }
   getSelectedCoords(mouse) {
-    const x = Math.floor(mouse.position.x / this.cellSize) * this.cellSize;
-    const y = Math.floor(mouse.position.y / this.cellSize) * this.cellSize;
+    const x = Math.floor(mouse.x / this.cellSize) * this.cellSize;
+    const y = Math.floor(mouse.y / this.cellSize) * this.cellSize;
     return { x, y };
   }
   getTileData(json) {
