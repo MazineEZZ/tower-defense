@@ -119,12 +119,8 @@ class Game {
   loadPlayState() {
     this.playGroup = new RegistrySystem();
 
-    this.towerFactory = new TowerFactory();
-    this.buildFloor = new BuildSystem(
-      this.tileMap,
-      this.towerFactory,
-      towerTypes,
-    );
+    this.towerFactory = new TowerFactory(towerTypes);
+    this.buildFloor = new BuildSystem(this.tileMap, this.towerFactory);
 
     this.events.on("towerPicked", (type) => {
       this.buildFloor.selectTower(type);
