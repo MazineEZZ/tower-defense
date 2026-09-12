@@ -21,7 +21,6 @@ class TileMap {
       this.mapWidth,
     );
     this.tileMap = this.combineTileData(tileMapJSON);
-    console.log(this.tileMap);
     this.tileSetIMG = tileSetIMG;
   }
   getSelectedCoords(mouse) {
@@ -32,17 +31,22 @@ class TileMap {
   getTileData(json) {
     return json.layers[0].data;
   }
+  getLayerData(layers, key) {
+    return layers.find((obj) => obj["name"] === key).data;
+  }
   combineTileData(json) {
     const boolGid = json.tilesets[1].firstgid;
-    const walkable = json.layers[1].data;
-    const buildable = json.layers[2].data;
+    const props = this.getLayerData(json.layers, "props");
+    const walkable = this.getLayerData(json.layers, "walkable");
+    const buildable = this.getLayerData(json.layers, "buildable");
 
     let ctr = -1;
     return this.tileMap.map((row) => {
       return row.map((tile) => {
         ctr++;
         return {
-          visual: tile,
+          base: tile,
+          props: props[ctr],
           walkable: walkable[ctr] % (boolGid - 1),
           buildable: buildable[ctr] % (boolGid - 1),
         };
@@ -53,14 +57,33 @@ class TileMap {
   draw(ctx) {
     for (let row = 0; row < this.mapHeight; row++) {
       for (let col = 0; col < this.mapWidth; col++) {
-        const gid = this.tileMap[row][col].visual;
+        const baseGid = this.tileMap[row][col].base;
+        const propsGid = this.tileMap[row][col].props;
 
-        // To avoid mathematical errors
-        if (gid === 0) continue;
+        // Skip over empty tiles
+        if (baseGid === 0) continue;
 
-        const localId = gid - this.firstgid;
-        const srcCol = localId % this.columns;
-        const srcRow = Math.floor(localId / this.columns);
+        let localId = baseGid - this.firstgid;
+        let srcCol = localId % this.columns;
+        let srcRow = Math.floor(localId / this.columns);
+
+        ctx.drawImage(
+          this.tileSetIMG,
+          srcCol * this.tileWidth,
+          srcRow * this.tileHeight,
+          this.tileWidth,
+          this.tileHeight,
+          col * this.cellSize,
+          row * this.cellSize,
+          this.cellSize,
+          this.cellSize,
+        );
+
+        if (propsGid === 0) continue;
+
+        localId = propsGid - this.firstgid;
+        srcCol = localId % this.columns;
+        srcRow = Math.floor(localId / this.columns);
 
         ctx.drawImage(
           this.tileSetIMG,
