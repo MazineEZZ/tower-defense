@@ -1,9 +1,10 @@
 import { isMouseOverlapping } from "../ui/ui.js";
 
 class BuildSystem {
-  constructor(tileMap, towerFactory) {
+  constructor(tileMap, placementGrid, towerFactory) {
     // TileMap
     this.tileMap = tileMap;
+    this.placementGrid = placementGrid;
     this.cellSize = tileMap.cellSize;
 
     // SelectedCell
@@ -18,14 +19,18 @@ class BuildSystem {
     this.towerFactory = towerFactory;
   }
   update(dt, mouse) {
-    if (this.selectedType !== null) {
-      this.tryBuildTower(mouse);
-    }
     this.selectedCell.position = this.tileMap.getSelectedCoords(mouse.position);
-    this.showSelectionPreview();
+    this.towerFactory.resetPreview();
+    this.placementGrid.isSelecting = false;
+    if (this.selectedType !== null) {
+      this.placementGrid.isSelecting = true;
+      this.tryBuildTower(mouse);
+      this.showSelectionPreview();
+    }
   }
   tryBuildTower(mouse) {
     if (isMouseOverlapping(this.selectedCell, mouse.lastClickPos)) {
+      if (!this.placementGrid.isValid) return;
       const x = this.selectedCell.position.x;
       const y = this.selectedCell.position.y;
 
@@ -37,9 +42,10 @@ class BuildSystem {
         this.cellSize,
       );
       this.selectedType = null;
+      this.placementGrid.addBuiltCell();
     }
   }
-  isValidPlacement() {}
+
   selectTower(type) {
     this.selectedType = type;
   }

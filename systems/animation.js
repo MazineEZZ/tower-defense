@@ -9,8 +9,10 @@ class Sprite {
     startY,
     spriteWidth,
     spriteHeight,
+    offset = { x: 0, y: 0 },
   ) {
     this.position = { x, y };
+    this.offset = offset;
     this.image = image;
     this.width = width;
     this.height = height;
@@ -18,19 +20,51 @@ class Sprite {
     this.startY = startY;
     this.spriteWidth = spriteWidth;
     this.spriteHeight = spriteHeight;
+    this.flipH = false;
+    this.flipV = false;
+    this.isRotated = false;
+  }
+  flipX(ctx) {
+    ctx.scale(-1, 1);
+    this.drawX = -this.drawX - this.width;
+  }
+  flipY(ctx) {
+    ctx.scale(1, -1);
+    this.drawY = -this.position.y - this.height;
+  }
+  rotate(ctx, hitWidth, hitHeight) {
+    ctx.translate(
+      this.position.x + hitWidth / 2,
+      this.position.y + hitHeight / 2,
+    );
+    ctx.rotate(this.degree);
+    this.drawY = -this.width + hitWidth / 2 + this.offset.x;
+    this.drawX = -this.height + hitHeight / 2;
+  }
+  update(dt, deg) {
+    this.degree = deg;
   }
   draw(ctx) {
+    this.drawX = this.position.x;
+    this.drawY = this.position.y + this.offset.x;
+
+    ctx.save();
+    if (this.flipH) this.flipX(ctx);
+    if (this.flipV) this.flipY(ctx);
+    if (this.isRotated) this.rotate(ctx, this.width, this.height);
+
     ctx.drawImage(
       this.image,
       this.startX,
       this.startY,
       this.spriteWidth,
       this.spriteHeight,
-      this.position.x,
-      this.position.y,
+      this.drawX,
+      this.drawY,
       this.width,
       this.height,
     );
+    ctx.restore();
   }
 }
 
@@ -45,9 +79,6 @@ class AnimatedSprite extends Sprite {
     this.fps = fps;
     this.frameDuration = 1 / fps;
     this.timer = 0;
-    this.flipH = false;
-    this.flipV = false;
-    this.isRotated = false;
     this.isDone = false;
   }
   add(name, row, col) {
@@ -82,23 +113,6 @@ class AnimatedSprite extends Sprite {
   anchorToHitbox(hitWidth, hitHeight) {
     this.drawX = this.position.x - this.width / 2 + hitWidth / 2;
     this.drawY = this.position.y - this.height + hitHeight;
-  }
-  flipX(ctx) {
-    ctx.scale(-1, 1);
-    this.drawX = -this.drawX - this.width;
-  }
-  flipY(ctx) {
-    ctx.scale(1, -1);
-    this.drawY = -this.position.y - this.height;
-  }
-  rotate(ctx, hitWidth, hitHeight) {
-    ctx.translate(
-      this.position.x + hitWidth / 2,
-      this.position.y + hitHeight / 2,
-    );
-    ctx.rotate(Math.PI / 2);
-    this.drawX = -this.width / 2;
-    this.drawY = -this.height / 2;
   }
   draw(ctx, hitboxWidth, hitboxHeight) {
     if (this.animations.length === 0) throw new Error("Add an animation!");

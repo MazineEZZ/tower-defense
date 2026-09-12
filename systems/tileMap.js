@@ -20,6 +20,8 @@ class TileMap {
       this.mapHeight,
       this.mapWidth,
     );
+    this.tileMap = this.combineTileData(tileMapJSON);
+    console.log(this.tileMap);
     this.tileSetIMG = tileSetIMG;
   }
   getSelectedCoords(mouse) {
@@ -30,10 +32,28 @@ class TileMap {
   getTileData(json) {
     return json.layers[0].data;
   }
+  combineTileData(json) {
+    const boolGid = json.tilesets[1].firstgid;
+    const walkable = json.layers[1].data;
+    const buildable = json.layers[2].data;
+
+    let ctr = -1;
+    return this.tileMap.map((row) => {
+      return row.map((tile) => {
+        ctr++;
+        return {
+          visual: tile,
+          walkable: walkable[ctr] % (boolGid - 1),
+          buildable: buildable[ctr] % (boolGid - 1),
+        };
+      });
+    });
+  }
+
   draw(ctx) {
     for (let row = 0; row < this.mapHeight; row++) {
       for (let col = 0; col < this.mapWidth; col++) {
-        const gid = this.tileMap[row][col];
+        const gid = this.tileMap[row][col].visual;
 
         // To avoid mathematical errors
         if (gid === 0) continue;

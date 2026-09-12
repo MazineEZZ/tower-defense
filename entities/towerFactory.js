@@ -44,9 +44,13 @@ class TowerFactory extends FactoryRegistry {
     this.previewTower.color = tower.color;
     this.previewTower.sprite = tower.sprite;
   }
+  resetPreview() {
+    this.previewTower.position.x = -this.cellSize;
+    this.previewTower.position.y = -this.cellSize;
+  }
   update(dt, mouse) {
     super.update(dt, mouse);
-    this.previewTower.update(dt);
+    this.previewTower.update(dt, mouse);
   }
   draw(ctx) {
     super.draw(ctx);

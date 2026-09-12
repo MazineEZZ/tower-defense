@@ -29,16 +29,19 @@ class Tower extends Rect {
         turretData.base.spriteWidth,
         turretData.base.spriteHeight,
       );
+      const yOffset = 0;
+      const xOffset = this.width / 5;
       this.head = new Sprite(
         this.sprite,
         this.position.x,
-        this.position.y + this.height / 5,
+        this.position.y,
         this.width,
         this.height,
         turretData.head.startX,
         turretData.head.startY,
         turretData.head.spriteWidth,
         turretData.head.spriteHeight,
+        { x: xOffset, y: yOffset },
       );
     }
     // Tower Own Properties
@@ -46,10 +49,20 @@ class Tower extends Rect {
     this.damage = damage;
     this.fireSpeed = fireSpeed;
   }
-  update(dt) {
-    this.base.position = this.position;
-    this.head.position.x = this.position.x;
-    this.head.position.y = this.position.y + this.height / 5;
+  calcMouseDegree(element) {
+    const dx = element.position.x - this.position.x;
+    const dy = element.position.y - this.position.y;
+    this.rotationDeg = -Math.atan2(dx, dy);
+  }
+  update(dt, mouse) {
+    this.calcMouseDegree(mouse);
+    if (this.sprite !== "") {
+      this.base.position = this.position;
+      this.head.position.x = this.position.x;
+      this.head.position.y = this.position.y;
+      this.head.isRotated = true;
+      this.head.update(dt, this.rotationDeg);
+    }
   }
   draw(ctx) {
     // Hitbox

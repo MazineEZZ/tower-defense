@@ -119,8 +119,20 @@ class Game {
   loadPlayState() {
     this.playGroup = new RegistrySystem();
 
+    // TileMap
+    this.tileMap = new TileMap(
+      gameSettings.cellSize,
+      this.assetManager.getData("tilemap"),
+      this.assetManager.getImage("tileset"),
+    );
+    this.placementGrid = new PlacementGrid(this.tileMap);
+
     this.towerFactory = new TowerFactory(towerTypes);
-    this.buildFloor = new BuildSystem(this.tileMap, this.towerFactory);
+    this.buildFloor = new BuildSystem(
+      this.tileMap,
+      this.placementGrid,
+      this.towerFactory,
+    );
 
     this.events.on("towerPicked", (type) => {
       this.buildFloor.selectTower(type);
@@ -271,14 +283,6 @@ class Game {
       32,
       10,
     );
-
-    // TileMap
-    this.tileMap = new TileMap(
-      gameSettings.cellSize,
-      this.assetManager.getData("tilemap"),
-      this.assetManager.getImage("tileset"),
-    );
-    this.placementGrid = new PlacementGrid(this.tileMap);
 
     // Entities States
     this.loadPlayState();
