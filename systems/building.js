@@ -42,10 +42,16 @@ class BuildSystem {
         this.cellSize,
       );
       this.selectedType = null;
-      this.placementGrid.addBuiltCell();
+      this.addBuiltCell(x, y);
     }
   }
+  addBuiltCell(x, y) {
+    const row = Math.floor(y / this.cellSize);
+    const col = Math.floor(x / this.cellSize);
 
+    this.tileMap.tileMap[row][col].buildable = 0;
+    console.log(this.tileMap.tileMap[row][col]);
+  }
   selectTower(type) {
     this.selectedType = type;
   }
