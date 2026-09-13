@@ -1,7 +1,7 @@
 /**
  * @param {number[]} original
- * @param {number} m
- * @param {number} n
+ * @param {number} rows
+ * @param {number} cols
  * @return {number[][]}
  */
 var construct2DArray = function (original, rows, cols) {
@@ -18,4 +18,27 @@ var construct2DArray = function (original, rows, cols) {
   return arr;
 };
 
-console.log(construct2DArray([1, 2, 3], 1, 3));
+function hasObject(arr, obj) {
+  return arr.some((el) => {
+    for (const prop in el) {
+      const elKeys = Object.keys(el);
+      const objKeys = Object.keys(obj);
+
+      if (elKeys.length !== objKeys.length) return false;
+
+      return elKeys.every((key) => el[key] === obj[key]);
+    }
+    return true;
+  });
+}
+
+const array = [
+  {
+    row: 2,
+    col: 3,
+  },
+];
+const row = 2;
+const col = 3;
+
+console.log(hasObject(array, { row, col }));

@@ -22,9 +22,11 @@ import { TileMap } from "../systems/tileMap.js";
 import { AssetManager } from "../systems/assets.js";
 import { PlacementGrid } from "../systems/placementGrid.js";
 import { RegistrySystem } from "../systems/registry.js";
-import { towerTypes } from "../data/data.js";
+import { towerTypes, wavesInfo } from "../data/data.js";
 import { BuildSystem } from "../systems/building.js";
 import { TowerFactory } from "../entities/towerFactory.js";
+import { WaveSystem } from "../systems/waves.js";
+import { EnemyFactory } from "../entities/enemyFactory.js";
 
 class Game {
   constructor(canvas) {
@@ -134,6 +136,9 @@ class Game {
       this.towerFactory,
     );
 
+    this.enemyFactory = new EnemyFactory();
+    this.wave = new WaveSystem(wavesInfo, this.enemyFactory, this.tileMap);
+
     this.events.on("towerPicked", (type) => {
       this.buildFloor.selectTower(type);
     });
@@ -142,6 +147,8 @@ class Game {
     this.playGroup.register(this.placementGrid);
     this.playGroup.register(this.buildFloor);
     this.playGroup.register(this.towerFactory);
+    this.playGroup.register(this.wave);
+    this.playGroup.register(this.enemyFactory);
   }
 
   loadMenuUI() {

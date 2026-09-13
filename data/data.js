@@ -6,4 +6,6 @@ const towerTypes = [
   { id: "stack", label: "Stack Tower", cost: 200, color: "orange" },
 ];
 
-export { towerTypes };
+const wavesInfo = [{ zombies: 10 }];
+
+export { towerTypes, wavesInfo };

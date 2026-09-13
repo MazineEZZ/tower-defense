@@ -18,6 +18,7 @@ class TowerFactory extends FactoryRegistry {
       "red",
       towerTypes[0].sprite,
     );
+    this.register(this.previewTower);
   }
   getTower(id) {
     return this.towerTypes.find((t) => t.id === id);
@@ -34,7 +35,7 @@ class TowerFactory extends FactoryRegistry {
       tower.color,
       tower.sprite,
     );
-    this.elements.push(newTower);
+    this.register(newTower);
   }
   showPreview(type, x, y) {
     const tower = this.getTower(type);
@@ -50,11 +51,9 @@ class TowerFactory extends FactoryRegistry {
   }
   update(dt, mouse) {
     super.update(dt, mouse);
-    this.previewTower.update(dt, mouse);
   }
   draw(ctx) {
     super.draw(ctx);
-    this.previewTower.draw(ctx);
   }
 }
 

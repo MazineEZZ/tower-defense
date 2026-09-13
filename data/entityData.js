@@ -3,4 +3,9 @@ const turretData = {
   head: { startX: 32, startY: 0, spriteWidth: 32, spriteHeight: 32 },
 };
 
-export { turretData };
+const zombieData = {
+  width: 32,
+  height: 15,
+};
+
+export { turretData, zombieData };
