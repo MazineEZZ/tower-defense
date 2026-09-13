@@ -4,7 +4,7 @@ class Enemy extends Rect {
   constructor(type, x, y, width, height, zIndex, path, color = "green") {
     super(type, x, y, width, height, zIndex, color);
     this.currPoint = 0;
-    this.speed = 100;
+    this.speed = 1000;
     this.path = path;
   }
   followPath(dt, path) {
