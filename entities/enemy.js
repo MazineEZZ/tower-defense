@@ -4,7 +4,7 @@ class Enemy extends Rect {
   constructor(type, x, y, width, height, zIndex, path, color = "green") {
     super(type, x, y, width, height, zIndex, color);
     this.currPoint = 0;
-    this.speed = 1000;
+    this.speed = 300;
     this.path = path;
   }
   followPath(dt, path) {
@@ -20,6 +20,7 @@ class Enemy extends Rect {
       const diffY = target.y - this.position.y;
       const dist = Math.hypot(diffX, diffY);
 
+      // It checks whether the move budget is available
       if (dist <= remainingMove) {
         // We reach (or pass) this waypoint this frame.
         this.position.x = target.x;
@@ -27,6 +28,7 @@ class Enemy extends Rect {
         this.currPoint++;
         remainingMove -= dist;
       } else {
+        // It moves slightly towards the point
         this.position.x += (diffX / dist) * remainingMove;
         this.position.y += (diffY / dist) * remainingMove;
         remainingMove = 0;

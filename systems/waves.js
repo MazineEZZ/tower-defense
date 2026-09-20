@@ -8,13 +8,22 @@ class WaveSystem {
     // Own Prop
     this.currLvl = 0;
 
-    this.spawn();
+    this.timer = 0;
+    this.zombieTime = 1;
   }
 
   spawn() {
     const path = this.tileMap.path;
     const spawnCell = path[0];
     this.enemyFactory.create("zombie", spawnCell.x, spawnCell.y, path);
+  }
+  update(dt) {
+    this.timer += dt;
+
+    while (this.timer >= this.zombieTime) {
+      this.spawn();
+      this.timer -= this.zombieTime;
+    }
   }
 }
 
