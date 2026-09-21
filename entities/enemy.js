@@ -10,6 +10,7 @@ class Enemy extends Rect {
     zIndex,
     path,
     offset,
+    events,
     color = "green",
   ) {
     super(type, x, y, width, height, zIndex, color);
@@ -17,15 +18,16 @@ class Enemy extends Rect {
     this.speed = 100;
     this.path = path;
     this.offset = offset;
-    console.log(this.offset);
     this.position.x = path[0].x + this.offset.x;
     this.position.y = path[0].y + this.offset.y;
+    this.events = events;
   }
   followPath(dt, path) {
     let remainingMove = this.speed * dt;
 
     while (remainingMove > 0) {
       if (this.currPoint >= this.path.length - 1) {
+        this.events.emit("enemyExited", this);
         return;
       }
       const wp = this.path[this.currPoint + 1];

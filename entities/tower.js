@@ -2,6 +2,7 @@ import { Rect } from "../core/rect.js";
 import { Sprite } from "../systems/animation.js";
 import { turretData } from "../data/entityData.js";
 import { isMouseOverlapping } from "../ui/ui.js";
+import { isCircleAndRectColliding } from "../systems/collisions.js";
 
 class Tower extends Rect {
   constructor(
@@ -12,6 +13,7 @@ class Tower extends Rect {
     height,
     zIndex,
     color,
+    enemies,
     sprite = "",
     damage = "",
     fireSpeed = "",
@@ -45,18 +47,32 @@ class Tower extends Rect {
         { x: xOffset, y: yOffset },
       );
     }
+    this.enemies = enemies;
+
     // Tower Own Properties
     this.level = 1;
     this.damage = damage;
     this.fireSpeed = fireSpeed;
+    this.range = 120;
+    this.rangeCircle = {
+      x: this.position.x + this.width / 2,
+      y: this.position.y + this.height / 2,
+      radius: this.range,
+    };
+
+    this.isHovering = false;
   }
-  calcMouseDegree(element) {
-    const dx = element.position.x - this.position.x;
-    const dy = element.position.y - this.position.y;
-    this.rotationDeg = -Math.atan2(dx, dy);
+  calcRotation() {
+    for (const enemy of this.enemies) {
+      if (isCircleAndRectColliding(this.rangeCircle, enemy)) {
+        const dx = enemy.position.x - this.position.x;
+        const dy = enemy.position.y - this.position.y;
+        this.rotationDeg = -Math.atan2(dx, dy);
+      }
+    }
   }
   update(dt, mouse) {
-    this.calcMouseDegree(mouse);
+    this.calcRotation();
     if (this.sprite !== "") {
       this.base.position = this.position;
       this.head.position.x = this.position.x;
@@ -64,6 +80,21 @@ class Tower extends Rect {
       this.head.isRotated = true;
       this.head.update(dt, this.rotationDeg);
     }
+    this.isHovering = isMouseOverlapping(this, mouse.position);
+  }
+  drawTowerRange(ctx) {
+    ctx.save();
+    ctx.strokeStyle = "cyan";
+    ctx.beginPath();
+    ctx.arc(
+      this.rangeCircle.x,
+      this.rangeCircle.y,
+      this.rangeCircle.radius,
+      0,
+      Math.PI * 2,
+    );
+    ctx.stroke();
+    ctx.restore();
   }
   draw(ctx) {
     // Hitbox
@@ -73,6 +104,9 @@ class Tower extends Rect {
     if (this.sprite !== "") {
       this.base.draw(ctx);
       this.head.draw(ctx);
+    }
+    if (this.isHovering) {
+      this.drawTowerRange(ctx);
     }
   }
 }

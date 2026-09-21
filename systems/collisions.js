@@ -1,3 +1,4 @@
+import { calcDistance2Points, clamp } from "../utilities/utils.js";
 import { RegistrySystem } from "./registry.js";
 
 class CollisionSystem extends RegistrySystem {
@@ -39,4 +40,23 @@ function separate(moving, obstacle) {
   }
 }
 
-export { CollisionSystem, separate, isColliding };
+function isCircleAndRectColliding(circle, rect) {
+  const closestX = clamp(
+    rect.position.x,
+    circle.x,
+    rect.position.x + rect.width,
+  );
+  const closestY = clamp(
+    rect.position.y,
+    circle.y,
+    rect.position.y + rect.height,
+  );
+  const closestPoint = {
+    x: closestX,
+    y: closestY,
+  };
+  const distance = calcDistance2Points(closestPoint, circle);
+  return distance < circle.radius;
+}
+
+export { CollisionSystem, separate, isColliding, isCircleAndRectColliding };

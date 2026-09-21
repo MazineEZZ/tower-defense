@@ -129,18 +129,24 @@ class Game {
     );
     this.placementGrid = new PlacementGrid(this.tileMap);
 
-    this.towerFactory = new TowerFactory(towerTypes);
+    this.enemyFactory = new EnemyFactory(this.tileMap.path, this.events);
+    this.wave = new WaveSystem(wavesInfo, this.enemyFactory);
+
+    this.towerFactory = new TowerFactory(
+      towerTypes,
+      this.enemyFactory.elements,
+    );
     this.buildFloor = new BuildSystem(
       this.tileMap,
       this.placementGrid,
       this.towerFactory,
     );
 
-    this.enemyFactory = new EnemyFactory();
-    this.wave = new WaveSystem(wavesInfo, this.enemyFactory, this.tileMap);
-
     this.events.on("towerPicked", (type) => {
       this.buildFloor.selectTower(type);
+    });
+    this.events.on("enemyExited", (enemy) => {
+      this.enemyFactory.unregister(enemy);
     });
 
     this.playGroup.register(this.tileMap);
