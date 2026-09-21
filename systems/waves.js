@@ -21,8 +21,8 @@ class WaveSystem {
     this.timer += dt;
 
     while (this.timer >= this.zombieTime) {
-      this.spawn();
       this.timer -= this.zombieTime;
+      this.spawn();
     }
   }
 }

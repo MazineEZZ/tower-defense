@@ -1,6 +1,7 @@
 import { Rect } from "../core/rect.js";
 import { Sprite } from "../systems/animation.js";
 import { turretData } from "../data/entityData.js";
+import { isMouseOverlapping } from "../ui/ui.js";
 
 class Tower extends Rect {
   constructor(

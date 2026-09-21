@@ -9,7 +9,8 @@ class EnemyFactory extends FactoryRegistry {
   create(type, x, y, path) {
     const width = zombieData.width;
     const height = zombieData.height;
-    const enemy = new Enemy(type, x, y, width, height, 3, path);
+    const offset = { x: width / 2, y: height + height / 2 };
+    const enemy = new Enemy(type, x, y, width, height, 3, path, offset);
     console.log(enemy);
     this.register(enemy);
   }

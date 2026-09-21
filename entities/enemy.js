@@ -1,11 +1,25 @@
 import { Rect } from "../core/rect.js";
 
 class Enemy extends Rect {
-  constructor(type, x, y, width, height, zIndex, path, color = "green") {
+  constructor(
+    type,
+    x,
+    y,
+    width,
+    height,
+    zIndex,
+    path,
+    offset,
+    color = "green",
+  ) {
     super(type, x, y, width, height, zIndex, color);
     this.currPoint = 0;
-    this.speed = 300;
+    this.speed = 100;
     this.path = path;
+    this.offset = offset;
+    console.log(this.offset);
+    this.position.x = path[0].x + this.offset.x;
+    this.position.y = path[0].y + this.offset.y;
   }
   followPath(dt, path) {
     let remainingMove = this.speed * dt;
@@ -14,17 +28,19 @@ class Enemy extends Rect {
       if (this.currPoint >= this.path.length - 1) {
         return;
       }
+      const wp = this.path[this.currPoint + 1];
+      const targetX = wp.x + this.offset.x;
+      const targetY = wp.y + this.offset.y;
 
-      const target = this.path[this.currPoint + 1];
-      const diffX = target.x - this.position.x;
-      const diffY = target.y - this.position.y;
+      const diffX = targetX - this.position.x;
+      const diffY = targetY - this.position.y;
       const dist = Math.hypot(diffX, diffY);
 
       // It checks whether the move budget is available
       if (dist <= remainingMove) {
         // We reach (or pass) this waypoint this frame.
-        this.position.x = target.x;
-        this.position.y = target.y;
+        this.position.x = targetX;
+        this.position.y = targetY;
         this.currPoint++;
         remainingMove -= dist;
       } else {

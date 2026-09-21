@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "target": "ES2022",
+    "checkJs": false,
+    "maxNodeModuleJsDepth": 0
+  },
+  "exclude": ["node_modules", "dist", ".next", "out"]
+}
