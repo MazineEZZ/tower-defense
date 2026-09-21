@@ -59,20 +59,27 @@ class Tower extends Rect {
       y: this.position.y + this.height / 2,
       radius: this.range,
     };
-
+    this.targets = [];
     this.isHovering = false;
   }
-  calcRotation() {
+  findTarget() {
+    this.targets.length = 0;
     for (const enemy of this.enemies) {
       if (isCircleAndRectColliding(this.rangeCircle, enemy)) {
-        const dx = enemy.position.x - this.position.x;
-        const dy = enemy.position.y - this.position.y;
-        this.rotationDeg = -Math.atan2(dx, dy);
+        this.targets.push(enemy);
       }
     }
+    if (this.targets.length > 0) {
+      this.calcRotation(this.targets[0]);
+    }
+  }
+  calcRotation(target) {
+    const dx = target.position.x + target.width / 2 - this.rangeCircle.x;
+    const dy = target.position.y + target.height / 2 - this.rangeCircle.y;
+    this.rotationDeg = -Math.atan2(dx, dy);
   }
   update(dt, mouse) {
-    this.calcRotation();
+    this.findTarget();
     if (this.sprite !== "") {
       this.base.position = this.position;
       this.head.position.x = this.position.x;
