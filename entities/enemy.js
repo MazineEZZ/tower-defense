@@ -22,11 +22,14 @@ class Enemy extends Rect {
     this.position.x = path[0].x + this.offset.x;
     this.position.y = path[0].y + this.offset.y;
     this.events = events;
+    this.isKilled = false;
   }
   takeDamage(dmg) {
+    if (this.isKilled) return;
     this.health -= dmg;
     if (this.health <= 0) {
       this.events.emit("enemyKilled", this);
+      this.isKilled = true;
     }
   }
   followPath(dt, path) {
@@ -34,6 +37,7 @@ class Enemy extends Rect {
 
     while (remainingMove > 0) {
       if (this.currPoint >= this.path.length - 1) {
+        this.isKilled = true;
         this.events.emit("enemyExited", this);
         return;
       }
