@@ -27,6 +27,7 @@ import { BuildSystem } from "../systems/building.js";
 import { TowerFactory } from "../entities/towerFactory.js";
 import { WaveSystem } from "../systems/waves.js";
 import { EnemyFactory } from "../entities/enemyFactory.js";
+import { BulletFactory } from "../entities/bulletFactory.js";
 
 class Game {
   constructor(canvas) {
@@ -131,10 +132,12 @@ class Game {
 
     this.enemyFactory = new EnemyFactory(this.tileMap.path, this.events);
     this.wave = new WaveSystem(wavesInfo, this.enemyFactory);
-
+    this.bulletFactory = new BulletFactory();
     this.towerFactory = new TowerFactory(
       towerTypes,
       this.enemyFactory.elements,
+      this.events,
+      this.bulletFactory,
     );
     this.buildFloor = new BuildSystem(
       this.tileMap,
@@ -148,10 +151,14 @@ class Game {
     this.events.on("enemyExited", (enemy) => {
       this.enemyFactory.unregister(enemy);
     });
+    this.events.on("sortTowers", () => {
+      this.towerFactory.sortByLayers();
+    });
 
     this.playGroup.register(this.tileMap);
     this.playGroup.register(this.placementGrid);
     this.playGroup.register(this.buildFloor);
+    this.playGroup.register(this.bulletFactory);
     this.playGroup.register(this.towerFactory);
     this.playGroup.register(this.wave);
     this.playGroup.register(this.enemyFactory);

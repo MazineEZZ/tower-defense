@@ -50,7 +50,6 @@ class BuildSystem {
     const col = Math.floor(x / this.cellSize);
 
     this.tileMap.tileMap[row][col].buildable = 0;
-    console.log(this.tileMap.tileMap[row][col]);
   }
   selectTower(type) {
     this.selectedType = type;

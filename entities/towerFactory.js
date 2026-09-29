@@ -3,11 +3,13 @@ import { FactoryRegistry } from "../systems/factories.js";
 import { Tower } from "./tower.js";
 
 class TowerFactory extends FactoryRegistry {
-  constructor(towerTypes, enemies) {
+  constructor(towerTypes, enemies, events, bulletFact) {
     super();
     this.towerTypes = towerTypes;
     this.enemies = enemies;
+    this.events = events;
     this.cellSize = gameSettings.cellSize;
+    this.bulletFact = bulletFact;
     // Default
     this.previewTower = new Tower(
       towerTypes[0].type,
@@ -18,6 +20,8 @@ class TowerFactory extends FactoryRegistry {
       4,
       "red",
       this.enemies,
+      this.events,
+      this.bulletFact,
       towerTypes[0].sprite,
     );
     this.register(this.previewTower);
@@ -36,6 +40,8 @@ class TowerFactory extends FactoryRegistry {
       4,
       tower.color,
       this.enemies,
+      this.events,
+      this.bulletFact,
       tower.sprite,
     );
     this.register(newTower);
@@ -51,6 +57,9 @@ class TowerFactory extends FactoryRegistry {
   resetPreview() {
     this.previewTower.position.x = -this.cellSize * 2;
     this.previewTower.position.y = -this.cellSize * 2;
+  }
+  sortByLayers() {
+    this.elements.sort((a, b) => a.zIndex - b.zIndex);
   }
   update(dt, mouse) {
     super.update(dt, mouse);

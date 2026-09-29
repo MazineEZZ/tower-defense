@@ -8,4 +8,10 @@ const zombieData = {
   height: 15,
 };
 
-export { turretData, zombieData };
+const bulletData = {
+  width: 6,
+  height: 10,
+  color: "yellow",
+};
+
+export { turretData, zombieData, bulletData };
