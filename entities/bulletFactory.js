@@ -3,21 +3,22 @@ import { Bullet } from "./bullet.js";
 import { bulletData } from "../data/entityData.js";
 
 class BulletFactory extends FactoryRegistry {
-  constructor() {
+  constructor(events) {
     super();
+    this.events = events;
     this.bulletData = bulletData;
   }
-  create(fromX, fromY, toX, toY, speed) {
+  create(fromX, fromY, target, speed, damage) {
     const bullet = new Bullet(
       "bullet",
       fromX,
       fromY,
-      toX,
-      toY,
+      target,
       this.bulletData.width,
       this.bulletData.height,
       1,
       speed,
+      damage,
       this.bulletData.color,
     );
     this.register(bullet);
@@ -25,16 +26,30 @@ class BulletFactory extends FactoryRegistry {
   update(dt) {
     super.update(dt);
     for (const bullet of this.elements) {
-      console.log(bullet.toX, bullet.speed);
-      const diffX = bullet.toX - bullet.position.x;
-      const diffY = bullet.toY - bullet.position.y;
+      const targetPos = {
+        x: bullet.target.position.x + bullet.target.width / 2,
+        y: bullet.target.position.y + bullet.target.height / 2,
+      };
+      const diffX = targetPos.x - bullet.position.x;
+      const diffY = targetPos.y - bullet.position.y;
       const dist = Math.hypot(diffX, diffY);
-      bullet.position.x += (diffX / dist) * bullet.speed * dt;
-      bullet.position.y += (diffY / dist) * bullet.speed * dt;
 
-      if (bullet.position.x >= bullet.toX && bullet.position.y >= bullet.toY) {
+      // Because the bullet homing effect is guarding for the bullets to hit the target
+      // Making the enemy take damage here is more efficient and less expensive
+      const step = bullet.speed * dt;
+      if (dist <= step || dist === 0) {
+        bullet.position.x = targetPos.x;
+        bullet.position.y = targetPos.y;
         this.unregister(bullet);
+        this.events.emit("enemyDamaged", {
+          target: bullet.target,
+          damage: bullet.damage,
+        });
+        continue;
       }
+
+      bullet.position.x += (diffX / dist) * step;
+      bullet.position.y += (diffY / dist) * step;
     }
   }
 }

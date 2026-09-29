@@ -16,11 +16,18 @@ class Enemy extends Rect {
     super(type, x, y, width, height, zIndex, color);
     this.currPoint = 0;
     this.speed = 100;
+    this.health = 200;
     this.path = path;
     this.offset = offset;
     this.position.x = path[0].x + this.offset.x;
     this.position.y = path[0].y + this.offset.y;
     this.events = events;
+  }
+  takeDamage(dmg) {
+    this.health -= dmg;
+    if (this.health <= 0) {
+      this.events.emit("enemyKilled", this);
+    }
   }
   followPath(dt, path) {
     let remainingMove = this.speed * dt;

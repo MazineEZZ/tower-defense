@@ -18,7 +18,7 @@ class Tower extends Rect {
     events,
     bulletFact,
     sprite = "",
-    damage = "",
+    damage = 100,
     fireSpeed = 1,
   ) {
     super(type, x, y, width, height, zIndex, color);
@@ -56,7 +56,7 @@ class Tower extends Rect {
     this.level = 0;
     this.damage = damage;
     this.fireSpeed = fireSpeed;
-    this.bulletSpeed = 900;
+    this.bulletSpeed = 1000;
     this.range = 120;
     this.rangeCircle = {
       x: this.position.x + this.width / 2,
@@ -115,9 +115,9 @@ class Tower extends Rect {
         this.bulletFact.create(
           this.position.x + this.width / 2,
           this.position.y + this.height / 2,
-          this.targets[0].position.x,
-          this.targets[0].position.y,
+          this.targets[0],
           this.bulletSpeed,
+          this.damage,
         );
       }
       this.timer -= this.fireSpeed;

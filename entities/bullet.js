@@ -5,18 +5,18 @@ class Bullet extends Rect {
     type,
     x,
     y,
-    toX,
-    toY,
+    target,
     width,
     height,
     zIndex,
     speed,
+    damage,
     color = "yellow",
   ) {
     super(type, x, y, width, height, zIndex, color);
-    this.toX = toX;
-    this.toY = toY;
+    this.target = target;
     this.speed = speed;
+    this.damage = damage;
   }
 }
 

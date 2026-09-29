@@ -132,7 +132,7 @@ class Game {
 
     this.enemyFactory = new EnemyFactory(this.tileMap.path, this.events);
     this.wave = new WaveSystem(wavesInfo, this.enemyFactory);
-    this.bulletFactory = new BulletFactory();
+    this.bulletFactory = new BulletFactory(this.events);
     this.towerFactory = new TowerFactory(
       towerTypes,
       this.enemyFactory.elements,
@@ -150,6 +150,12 @@ class Game {
     });
     this.events.on("enemyExited", (enemy) => {
       this.enemyFactory.unregister(enemy);
+    });
+    this.events.on("enemyKilled", (enemy) => {
+      this.enemyFactory.unregister(enemy);
+    });
+    this.events.on("enemyDamaged", (data) => {
+      data.target.takeDamage(data.damage);
     });
     this.events.on("sortTowers", () => {
       this.towerFactory.sortByLayers();
