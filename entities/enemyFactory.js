@@ -1,12 +1,14 @@
 import { zombieData } from "../data/entityData.js";
 import { FactoryRegistry } from "../systems/factories.js";
 import { Enemy } from "./enemy.js";
+import { enemyTypes } from "../data/data.js";
 
 class EnemyFactory extends FactoryRegistry {
   constructor(path, events) {
     super();
     this.path = path;
     this.events = events;
+    this.enemyTypes = enemyTypes;
   }
   create(type) {
     const spawnCell = this.path[0];
@@ -23,6 +25,7 @@ class EnemyFactory extends FactoryRegistry {
       this.path,
       offset,
       this.events,
+      this.enemyTypes[type],
     );
     this.register(enemy);
   }

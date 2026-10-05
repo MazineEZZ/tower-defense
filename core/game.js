@@ -131,7 +131,7 @@ class Game {
     this.placementGrid = new PlacementGrid(this.tileMap);
 
     this.enemyFactory = new EnemyFactory(this.tileMap.path, this.events);
-    this.wave = new WaveSystem(wavesInfo, this.enemyFactory);
+    this.waves = new WaveSystem(wavesInfo, this.enemyFactory);
     this.bulletFactory = new BulletFactory(this.events);
     this.towerFactory = new TowerFactory(
       towerTypes,
@@ -166,7 +166,7 @@ class Game {
     this.playGroup.register(this.buildFloor);
     this.playGroup.register(this.bulletFactory);
     this.playGroup.register(this.towerFactory);
-    this.playGroup.register(this.wave);
+    this.playGroup.register(this.waves);
     this.playGroup.register(this.enemyFactory);
   }
 
@@ -277,16 +277,50 @@ class Game {
       this.events,
       towerTypes,
       "black",
+      { btnBorderSize: 2, btnBorderColor: "black" },
+      {
+        text: "towers",
+        fontClr: "white",
+        fontSize: "18px",
+      },
+      "red",
+      "green",
     );
     toolbar.visible = false;
+
+    const startWaveBtnOffset = 10;
+    const startWaveSize = 30;
+    const startWaveBtn = new Button(
+      gameWidth - startWaveSize - startWaveBtnOffset,
+      startWaveBtnOffset,
+      startWaveSize,
+      startWaveSize,
+      4,
+      this.events,
+      "waveStarted",
+      { btnBorderSize: 2, btnBorderColor: "black" },
+      {
+        text: "▶",
+        fontClr: "white",
+        fontSize: "18px",
+      },
+      "green",
+      "rgb(18, 103, 25)",
+    );
 
     this.events.on("toggleToolbar", () => {
       toolbar.visible = !toolbar.visible;
       openToolbarBtn.visible = !toolbar.visible;
     });
+    this.events.on("waveStarted", () => {
+      if (this.waves.isFinished) {
+        this.waves.isFinished = false;
+      }
+    });
 
     this.playUI.register(openToolbarBtn);
     this.playUI.register(toolbar);
+    this.playUI.register(startWaveBtn);
   }
   async init() {
     // Load assets

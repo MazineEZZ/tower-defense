@@ -11,12 +11,12 @@ class Enemy extends Rect {
     path,
     offset,
     events,
-    color = "green",
+    data = { color: "green" },
   ) {
-    super(type, x, y, width, height, zIndex, color);
+    super(type, x, y, width, height, zIndex, data.color);
     this.currPoint = 0;
-    this.speed = 100;
-    this.health = 200;
+    this.speed = data.speed;
+    this.health = data.health;
     this.path = path;
     this.offset = offset;
     this.position.x = path[0].x + this.offset.x;
@@ -47,9 +47,8 @@ class Enemy extends Rect {
 
       const diffX = targetX - this.position.x;
       const diffY = targetY - this.position.y;
-      const dist = Math.hypot(diffX, diffY);
+      const dist = Math.hypot(diffX, diffY); // It checks whether the move budget is available
 
-      // It checks whether the move budget is available
       if (dist <= remainingMove) {
         // We reach (or pass) this waypoint this frame.
         this.position.x = targetX;
