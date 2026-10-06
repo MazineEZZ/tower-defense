@@ -1,4 +1,5 @@
 import { Rect } from "../core/rect.js";
+import { ResourceBar } from "../ui/ui.js";
 
 class Enemy extends Rect {
   constructor(
@@ -17,12 +18,23 @@ class Enemy extends Rect {
     this.currPoint = 0;
     this.speed = data.speed;
     this.health = data.health;
+    this.maxHealth = data.health;
     this.path = path;
     this.offset = offset;
     this.position.x = path[0].x + this.offset.x;
     this.position.y = path[0].y + this.offset.y;
     this.events = events;
     this.isKilled = false;
+    this.healthBar = new ResourceBar(
+      0,
+      0,
+      this.width - 3,
+      10,
+      this.zIndex,
+      "green",
+      "yellow",
+      "red",
+    );
   }
   takeDamage(dmg) {
     if (this.isKilled) return;
@@ -31,6 +43,8 @@ class Enemy extends Rect {
       this.events.emit("enemyKilled", this);
       this.isKilled = true;
     }
+    this.healthBar.setValue(this.health, this.maxHealth);
+    console.log(this.maxHealth);
   }
   followPath(dt, path) {
     let remainingMove = this.speed * dt;
@@ -63,8 +77,21 @@ class Enemy extends Rect {
       }
     }
   }
+  updateHealthBar(dt) {
+    const offset = 3;
+    this.healthBar.position.x =
+      this.position.x - this.healthBar.width / 2 + this.width / 2;
+    this.healthBar.position.y =
+      this.position.y - this.healthBar.height - offset;
+    this.healthBar.update(dt);
+  }
   update(dt) {
     this.followPath(dt, this.path);
+    this.updateHealthBar(dt);
+  }
+  draw(ctx) {
+    super.draw(ctx);
+    this.healthBar.draw(ctx);
   }
 }
 

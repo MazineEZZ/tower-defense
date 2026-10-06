@@ -279,8 +279,8 @@ class ResourceBar extends UIElement {
   draw(ctx) {
     ctx.save();
     // Back
-    ctx.fillStyle = "black";
-    ctx.fillRect(this.position.x, this.position.y, this.width, this.height);
+    // ctx.fillStyle = "black";
+    // ctx.fillRect(this.position.x, this.position.y, this.width, this.height);
     // Bar
     const offset = 3;
     ctx.fillStyle = `rgb(${this.progressColor.r}, ${this.progressColor.g}, ${this.progressColor.b})`;

@@ -9,14 +9,14 @@ const towerTypes = [
 const wavesInfo = [
   ["zombie", "zombie", "zombie", "zombie", "sprinter"],
   ["zombie", "zombie", "sprinter", "sprinter", "zombie"],
-  ["sprinter", "zombie", "sprinter", "zombie", "buffed"],
+  ["sprinter", "zombie", "sprinter", "zombie", "buffed", "floppa"],
 ];
 
 const enemyTypes = {
   zombie: { health: 200, speed: 120, color: "green" },
   sprinter: { health: 150, speed: 200, color: "blue" },
   buffed: { health: 350, speed: 100, color: "yellow" },
-  floppa: { health: 1000000, speed: 80 },
+  floppa: { health: 1000000, speed: 80, color: "black" },
 };
 
 export { towerTypes, enemyTypes, wavesInfo };
