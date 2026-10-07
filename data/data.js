@@ -13,10 +13,10 @@ const wavesInfo = [
 ];
 
 const enemyTypes = {
-  zombie: { health: 200, speed: 120, color: "green" },
-  sprinter: { health: 150, speed: 200, color: "blue" },
-  buffed: { health: 350, speed: 100, color: "yellow" },
-  floppa: { health: 1000000, speed: 80, color: "black" },
+  zombie: { health: 300, speed: 120, color: "green" },
+  sprinter: { health: 200, speed: 200, color: "blue" },
+  buffed: { health: 400, speed: 100, color: "yellow" },
+  floppa: { health: 2000, speed: 80, color: "black" },
 };
 
 export { towerTypes, enemyTypes, wavesInfo };

@@ -44,7 +44,6 @@ class Enemy extends Rect {
       this.isKilled = true;
     }
     this.healthBar.setValue(this.health, this.maxHealth);
-    console.log(this.maxHealth);
   }
   followPath(dt, path) {
     let remainingMove = this.speed * dt;

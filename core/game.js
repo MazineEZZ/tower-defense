@@ -28,6 +28,7 @@ import { TowerFactory } from "../entities/towerFactory.js";
 import { WaveSystem } from "../systems/waves.js";
 import { EnemyFactory } from "../entities/enemyFactory.js";
 import { BulletFactory } from "../entities/bulletFactory.js";
+import { Economy } from "../systems/economy.js";
 
 class Game {
   constructor(canvas) {
@@ -121,6 +122,8 @@ class Game {
   }
   loadPlayState() {
     this.playGroup = new RegistrySystem();
+
+    this.economy = new Economy();
 
     // TileMap
     this.tileMap = new TileMap(
@@ -308,6 +311,24 @@ class Game {
       "rgb(18, 103, 25)",
     );
 
+    const balance = new Label(offset * 2, offset * 3, {
+      text: "$0",
+      color: "white",
+      zIndex: 3,
+      borderColor: "black",
+      borderSize: "4",
+      baseline: "top",
+    });
+
+    const hearts = new Label(offset * 2, offset * 6.5, {
+      text: "hearts: 10",
+      color: "white",
+      zIndex: 3,
+      borderColor: "black",
+      borderSize: "4",
+      baseline: "top",
+    });
+
     this.events.on("toggleToolbar", () => {
       toolbar.visible = !toolbar.visible;
       openToolbarBtn.visible = !toolbar.visible;
@@ -317,10 +338,18 @@ class Game {
         this.waves.isFinished = false;
       }
     });
+    this.events.on("balanceUpdated", (text) => {
+      balance.setText(text);
+    });
+    this.events.on("heartsUpdated", (text) => {
+      hearts.setText(text);
+    });
 
     this.playUI.register(openToolbarBtn);
     this.playUI.register(toolbar);
     this.playUI.register(startWaveBtn);
+    this.playUI.register(balance);
+    this.playUI.register(hearts);
   }
   async init() {
     // Load assets

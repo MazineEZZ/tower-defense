@@ -81,7 +81,7 @@
          "name":"buildable",
          "opacity":0.6,
          "type":"tilelayer",
-         "visible":true,
+         "visible":false,
          "width":16,
          "x":0,
          "y":0
@@ -101,8 +101,8 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":110.666666666667,
-                 "y":14.6666666666667
+                 "x":109.666666666667,
+                 "y":17.1666666666667
                 }, 
                 {
                  "height":0,
@@ -114,7 +114,7 @@
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":492.666666666667,
+                 "x":502.666666666667,
                  "y":242
                 }],
          "opacity":1,
