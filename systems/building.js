@@ -1,7 +1,7 @@
 import { isMouseOverlapping } from "../ui/ui.js";
 
 class BuildSystem {
-  constructor(tileMap, placementGrid, towerFactory) {
+  constructor(tileMap, placementGrid, towerFactory, economy) {
     // TileMap
     this.tileMap = tileMap;
     this.placementGrid = placementGrid;
@@ -13,6 +13,9 @@ class BuildSystem {
       width: this.cellSize,
       height: this.cellSize,
     };
+
+    // Economy
+    this.economy = economy;
 
     // Towers
     this.selectedType = null;
@@ -31,6 +34,14 @@ class BuildSystem {
   tryBuildTower(mouse) {
     if (isMouseOverlapping(this.selectedCell, mouse.lastClickPos)) {
       if (!this.placementGrid.isValid) return;
+
+      const towerCost = this.towerFactory.getTower(this.selectedType).cost;
+      if (!this.economy.spend(towerCost)) {
+        console.warn("Not enough money");
+        this.selectedType = null;
+        return;
+      }
+
       const x = this.selectedCell.position.x;
       const y = this.selectedCell.position.y;
 

@@ -146,6 +146,7 @@ class Game {
       this.tileMap,
       this.placementGrid,
       this.towerFactory,
+      this.economy,
     );
 
     this.events.on("towerPicked", (type) => {
