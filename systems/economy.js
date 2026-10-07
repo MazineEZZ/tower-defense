@@ -1,17 +1,20 @@
 class Economy {
-  constructor(events) {
+  constructor(startingBlc, events) {
     this.events = events;
-    this.balance = 0;
+    this._balance = startingBlc;
   }
   spend(value) {
-    if (this.balance < value) return false;
-    this.balance -= value;
-    this.events.emit("balanceUpdated", `${this.balance}`);
+    if (this._balance < value) return false;
+    this._balance -= value;
+    this.events.emit("balanceUpdated", `$${this._balance}`);
     return true;
   }
   add(value) {
-    this.balance += value;
-    this.events.emit("balanceUpdated", `${this.balance}`);
+    this._balance += value;
+    this.events.emit("balanceUpdated", `$${this._balance}`);
+  }
+  get balance() {
+    return `$${this._balance}`;
   }
 }
 

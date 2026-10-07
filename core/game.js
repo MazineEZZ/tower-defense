@@ -123,7 +123,7 @@ class Game {
   loadPlayState() {
     this.playGroup = new RegistrySystem();
 
-    this.economy = new Economy();
+    this.economy = new Economy(100, this.events);
 
     // TileMap
     this.tileMap = new TileMap(
@@ -312,7 +312,7 @@ class Game {
     );
 
     const balance = new Label(offset * 2, offset * 3, {
-      text: "$0",
+      text: this.economy.balance,
       color: "white",
       zIndex: 3,
       borderColor: "black",
