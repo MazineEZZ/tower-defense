@@ -29,6 +29,7 @@ import { WaveSystem } from "../systems/waves.js";
 import { EnemyFactory } from "../entities/enemyFactory.js";
 import { BulletFactory } from "../entities/bulletFactory.js";
 import { Economy } from "../systems/economy.js";
+import { GameController } from "./controller.js";
 
 class Game {
   constructor(canvas) {
@@ -123,6 +124,8 @@ class Game {
   loadPlayState() {
     this.playGroup = new RegistrySystem();
 
+    this.gameController = new GameController(10, this.events);
+
     this.economy = new Economy(100, this.events);
 
     // TileMap
@@ -152,8 +155,14 @@ class Game {
     this.events.on("towerPicked", (type) => {
       this.buildFloor.selectTower(type);
     });
+    // For now all enemies deal exactly one heart
     this.events.on("enemyExited", (enemy) => {
       this.enemyFactory.unregister(enemy);
+      this.gameController.subHearts(1);
+      this.events.emit(
+        "heartsUpdated",
+        `hearts: ${this.gameController.hearts}`,
+      );
     });
     this.events.on("enemyKilled", (enemy) => {
       this.enemyFactory.unregister(enemy);
@@ -163,6 +172,9 @@ class Game {
     });
     this.events.on("sortTowers", () => {
       this.towerFactory.sortByLayers();
+    });
+    this.events.on("gameOver", () => {
+      this.playUI.register(this.gameOverScreen);
     });
 
     this.playGroup.register(this.tileMap);
@@ -351,6 +363,38 @@ class Game {
     this.playUI.register(startWaveBtn);
     this.playUI.register(balance);
     this.playUI.register(hearts);
+  }
+  loadGameOverUI() {
+    this.gameOverUI = new UILayer();
+
+    const panelWidth = 200;
+    const panelHeight = 200;
+    const goPanel = new Panel(
+      gameSettings.width / 2 - panelWidth / 2,
+      gameSettings.height / 2 + panelHeight / 2,
+      panelWidth,
+      panelHeight,
+      2,
+      "black",
+    );
+
+    const goTitle = new Label(
+      gameSettings.width / 2,
+      goPanel.position.x + 200,
+      {
+        text: "Game Over Bud!",
+        color: "white",
+        zIndex: 3,
+        borderColor: "black",
+        borderSize: 4,
+        align: "center",
+        baseline: "middle",
+        fontSize: "24px",
+      },
+    );
+
+    this.gameOverUI.register(goPanel);
+    this.gameOverUI.register(goTitle);
   }
   async init() {
     // Load assets
